@@ -11,7 +11,7 @@ class CalculadoraBitcoin:
     # Dados dos estados brasileiros com irradiação solar média (kWh/m²/dia)
     # Fonte: Atlas Solar Brasileiro (INPE)
     ESTADOS_BRASIL = {
-        "AC": {"nome": "Acre", "irradiacao": 5.2, "fator_emissao": 0.08},
+        "AC": {"nome": "Acre", "irradiacao": 5.223232, "fator_emissao": 0.08},
         "AL": {"nome": "Alagoas", "irradiacao": 5.8, "fator_emissao": 0.12},
         "AP": {"nome": "Amapá", "irradiacao": 5.1, "fator_emissao": 0.07},
         "AM": {"nome": "Amazonas", "irradiacao": 4.8, "fator_emissao": 0.06},
@@ -212,3 +212,4 @@ class CalculadoraBitcoin:
         """Retorna dados completos de um estado"""
 
         return self.ESTADOS_BRASIL.get(estado)
+

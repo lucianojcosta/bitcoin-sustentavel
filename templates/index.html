@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estação de Mineração Bitcoin Sustentável</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚡ Estação de Mineração Bitcoin Sustentável</h1>
+            <p>Simulador de viabilidade com energia solar para o Brasil</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab('config-inicial')">Configuração Inicial</button>
+            <button class="tab-button" onclick="openTab('montar-estacao')">Montar Estação</button>
+            <button class="tab-button" onclick="openTab('energia-solar')">Energia Solar</button>
+            <button class="tab-button" onclick="openTab('resultados')">Resultados</button>
+            <button class="tab-button" onclick="openTab('sobre')">Sobre</button>
+        </div>
+
+        <!-- Aba 1: Configuração Inicial -->
+        <div id="config-inicial" class="tab-content active">
+            <h2>📍 Configuração Inicial</h2>
+            
+            <div class="form-group">
+                <label for="estado">Estado:</label>
+                <select id="estado">
+                    <option value="">Selecione seu estado</option>
+                </select>
+                <small>Irradiação solar média: <span id="irradiacao-info">--</span> kWh/m²/dia</small>
+            </div>
+
+            <div class="form-group">
+                <label for="orcamento">Orçamento Total (R$):</label>
+                <input type="number" id="orcamento" min="0" value="50000">
+            </div>
+
+            <div class="form-group">
+                <label for="custo-energia">Custo da Energia (R$/kWh):</label>
+                <input type="number" id="custo-energia" step="0.01" min="0" value="0.80">
+                <small>Verifique na sua conta de luz (média Brasil: R$ 0,80/kWh)</small>
+            </div>
+
+            <button onclick="avancarParaMontagem()" class="btn-primary">Avançar para Montagem →</button>
+        </div>
+
+        <!-- Aba 2: Montar Estação -->
+        <div id="montar-estacao" class="tab-content">
+            <h2>🛠️ Montar Estação de Mineração</h2>
+            
+            <div class="equipamento-categoria">
+                <h3>🔧 ASICs (Recomendado para Bitcoin)</h3>
+                <div id="lista-asics">
+                    <!-- Preenchido dinamicamente -->
+                </div>
+            </div>
+
+            <div class="equipamento-categoria">
+                <h3>🎮 GPUs (Para outras criptomoedas)</h3>
+                <div id="lista-gpus">
+                    <!-- Preenchido dinamicamente -->
+                </div>
+            </div>
+
+            <div class="resumo-equipamentos">
+                <h3>📊 Resumo da Estação</h3>
+                <div class="resumo-grid">
+                    <div class="resumo-item">
+                        <span class="resumo-label">Consumo Total:</span>
+                        <span class="resumo-valor" id="consumo-total">0 W</span>
+                    </div>
+                    <div class="resumo-item">
+                        <span class="resumo-label">Custo Equipamentos:</span>
+                        <span class="resumo-valor" id="custo-equipamentos">R$ 0</span>
+                    </div>
+                    <div class="resumo-item">
+                        <span class="resumo-label">Hashrate Total:</span>
+                        <span class="resumo-valor" id="hashrate-total">0 TH/s</span>
+                    </div>
+                    <div class="resumo-item">
+                        <span class="resumo-label">Consumo Mensal:</span>
+                        <span class="resumo-valor" id="consumo-mensal-kwh">0 kWh</span>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="avancarParaEnergiaSolar()" class="btn-primary">Avançar para Energia Solar →</button>
+        </div>
+
+        <!-- Aba 3: Energia Solar -->
+        <div id="energia-solar" class="tab-content">
+            <h2>☀️ Configuração de Energia Solar</h2>
+            
+            <div class="form-group">
+                <label for="quantidade-paineis">Quantidade de Painéis Solares:</label>
+                <input type="number" id="quantidade-paineis" min="0" value="10" onchange="calcularSolar()">
+            </div>
+
+            <div class="form-group">
+                <label for="potencia-painel">Potência por Painel (Wp):</label>
+                <select id="potencia-painel" onchange="calcularSolar()">
+                    <option value="550">550W (Painel Comum)</option>
+                    <option value="450">450W (Painel Econômico)</option>
+                    <option value="600">600W (Painel Premium)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="custo-sistema">Investimento no Sistema Solar (R$):</label>
+                <input type="number" id="custo-sistema" min="0" value="30000">
+                <small>Custo aproximado: R$ 5.000 por kWp instalado</small>
+            </div>
+
+            <div class="resultado-solar">
+                <h3>⚡ Geração Solar Estimada</h3>
+                <div class="resultado-grid">
+                    <div class="resultado-item">
+                        <span class="resultado-label">Geração Mensal:</span>
+                        <span class="resultado-valor" id="geracao-mensal">0 kWh/mês</span>
+                    </div>
+                    <div class="resultado-item">
+                        <span class="resultado-label">Potência do Sistema:</span>
+                        <span class="resultado-valor" id="potencia-sistema">0 kWp</span>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="calcularViabilidadeCompleta()" class="btn-primary">Calcular Viabilidade Completa</button>
+        </div>
+
+        <!-- Aba 4: Resultados -->
+        <div id="resultados" class="tab-content">
+            <h2>📈 Resultados e Viabilidade</h2>
+            
+            <div class="indicadores">
+                <div class="indicador" id="indicador-cobertura">
+                    <h3>☀️ Cobertura Solar</h3>
+                    <div class="valor" id="cobertura-solar">--%</div>
+                    <small>Porcentagem do consumo suprida pela energia solar</small>
+                </div>
+                
+                <div class="indicador" id="indicador-economia">
+                    <h3>💰 Economia Mensal</h3>
+                    <div class="valor" id="economia-mensal">R$ --</div>
+                    <small>Economia com conta de energia</small>
+                </div>
+                
+                <div class="indicador" id="indicador-payback">
+                    <h3>⏱️ Payback</h3>
+                    <div class="valor" id="payback">-- meses</div>
+                    <small>Tempo de retorno do investimento</small>
+                </div>
+                
+                <div class="indicador" id="indicador-co2">
+                    <h3>🌱 CO₂ Evitado</h3>
+                    <div class="valor" id="co2-evitado">-- kg/mês</div>
+                    <small>Emissões de carbono evitadas</small>
+                </div>
+            </div>
+
+            <div class="grafico-comparativo">
+                <h3>📊 Consumo vs Geração de Energia</h3>
+                <div class="barras">
+                    <div class="barra-container">
+                        <div class="barra-label">Consumo da Estação</div>
+                        <div class="barra">
+                            <div class="barra-consumo" id="barra-consumo"></div>
+                        </div>
+                        <span class="barra-valor" id="valor-consumo">0 kWh</span>
+                    </div>
+                    <div class="barra-container">
+                        <div class="barra-label">Geração Solar</div>
+                        <div class="barra">
+                            <div class="barra-geracao" id="barra-geracao"></div>
+                        </div>
+                        <span class="barra-valor" id="valor-geracao">0 kWh</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recomendacao" id="recomendacao">
+                <h3>💡 Análise de Viabilidade</h3>
+                <p>Preencha todas as abas anteriores para ver a análise completa do projeto.</p>
+            </div>
+
+            <div class="detalhes-financeiros" id="detalhes-financeiros" style="display: none;">
+                <h3>📋 Detalhes Financeiros</h3>
+                <div class="detalhes-grid">
+                    <div class="detalhe-item">
+                        <span>Receita Mineração:</span>
+                        <span id="detalhe-receita">R$ 0/mês</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span>Investimento Total:</span>
+                        <span id="detalhe-investimento">R$ 0</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span>Preço Bitcoin:</span>
+                        <span id="detalhe-bitcoin">R$ 0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aba 5: Sobre -->
+        <div id="sobre" class="tab-content">
+            <h2>ℹ️ Sobre o Projeto</h2>
+            
+            <div class="sobre-content">
+                <div class="integrantes">
+                    <h3>👥 Integrantes do Grupo</h3>
+                    <ul>
+                        <li>Antenor</li>
+                        <li>Eduardo</li>
+                        <li>Hilber</li>
+                        <li>Luciano</li>
+                    </ul>
+                    <p><strong>Tutor:</strong> Danilo</p>
+                </div>
+
+                <div class="objetivo">
+                    <h3>🎯 Objetivo do Projeto</h3>
+                    <p>Desenvolver um simulador computacional para análise de viabilidade de estações de mineração de Bitcoin utilizando energia solar no contexto brasileiro, considerando aspectos econômicos, energéticos e ambientais.</p>
+                </div>
+
+                <div class="fontes">
+                    <h3>📚 Fontes de Dados Utilizadas</h3>
+                    <ul>
+                        <li><strong>Irradiação Solar:</strong> Atlas Solar Brasileiro (INPE)</li>
+                        <li><strong>Equipamentos:</strong> Dados técnicos de fabricantes (Bitmain, MicroBT, Canaan, NVIDIA, AMD)</li>
+                        <li><strong>Cotação Bitcoin:</strong> API CoinGecko</li>
+                        <li><strong>Emissões CO₂:</strong> Ministério do Meio Ambiente</li>
+                        <li><strong>Tarifas de Energia:</strong> ANEEL</li>
+                    </ul>
+                </div>
+
+                <div class="tecnologias">
+                    <h3>🔧 Tecnologias Utilizadas</h3>
+                    <div class="tech-grid">
+                        <span class="tech-item">Python</span>
+                        <span class="tech-item">Flask</span>
+                        <span class="tech-item">HTML5</span>
+                        <span class="tech-item">CSS3</span>
+                        <span class="tech-item">JavaScript</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

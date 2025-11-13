@@ -210,6 +210,4 @@ class CalculadoraBitcoin:
 
     def get_dados_estado(self, estado):
         """Retorna dados completos de um estado"""
-
         return self.ESTADOS_BRASIL.get(estado)
-

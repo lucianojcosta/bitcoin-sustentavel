@@ -1,6 +1,5 @@
 from flask import Flask, render_template, jsonify, request
 from calculadora import CalculadoraBitcoin
-import requests
 from datetime import datetime
 
 app = Flask(__name__)
@@ -21,17 +20,10 @@ def dados_iniciais():
 
 @app.route('/api/bitcoin-price')
 def get_bitcoin_price():
-    """Busca cotação atual do Bitcoin"""
-    try:
-        response = requests.get(
-            'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=brl', 
-            timeout=5
-        )
-        data = response.json()
-        return jsonify({'preco_brl': data['bitcoin']['brl']})
-    except Exception as e:
-        print(f"Erro ao buscar preço Bitcoin: {e}")
-        return jsonify({'preco_brl': 180000})  # Fallback
+    """Retorna preço manual do Bitcoin (sem API externa)"""
+    # Preço fixo manual - pode ser ajustado conforme necessidade
+    preco_manual_brl = 180000  # R$ 180.000,00
+    return jsonify({'preco_brl': preco_manual_brl})
 
 @app.route('/api/calcular-viabilidade-completa', methods=['POST'])
 def calcular_viabilidade_completa():
@@ -76,9 +68,8 @@ def calcular_viabilidade_completa():
             geracao_solar_kwh, consumo_mensal_kwh, custo_energia_kwh
         )
 
-        # 3. Cálculo de receita de mineração
-        preco_bitcoin_response = get_bitcoin_price()
-        preco_bitcoin_brl = preco_bitcoin_response.json['preco_brl']
+        # 3. Cálculo de receita de mineração (usando preço manual)
+        preco_bitcoin_brl = 180000  # Preço fixo manual
         receita_mineracao_mensal = calc.calcular_receita_mineracao(
             hashrate_total_th, preco_bitcoin_brl
         )

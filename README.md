@@ -30,8 +30,7 @@ Executar windows + r = cmd
    
    env\Scripts\activate
 
-3. Instalar o Flask  
-   No terminal, digitar:
+3. Instalar o Flask. No terminal, digitar:
    
    pip install -r requirements.txt
 

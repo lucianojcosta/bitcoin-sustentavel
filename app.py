@@ -22,7 +22,7 @@ def dados_iniciais():
 def get_bitcoin_price():
     """Retorna preço manual do Bitcoin (sem API externa)"""
     # Preço fixo manual - pode ser ajustado conforme necessidade
-    preco_manual_brl = 180000  # R$ 180.000,00
+    preco_manual_brl = 535345.02  # R$ 535.345,02
     return jsonify({'preco_brl': preco_manual_brl})
 
 @app.route('/api/calcular-viabilidade-completa', methods=['POST'])
@@ -69,7 +69,7 @@ def calcular_viabilidade_completa():
         )
 
         # 3. Cálculo de receita de mineração (usando preço manual)
-        preco_bitcoin_brl = 180000  # Preço fixo manual
+        preco_bitcoin_brl = 535345.02
         receita_mineracao_mensal = calc.calcular_receita_mineracao(
             hashrate_total_th, preco_bitcoin_brl
         )
@@ -173,4 +173,5 @@ def simular_solar():
         return jsonify({'erro': str(e)}), 500
 
 if __name__ == '__main__':
+
     app.run(debug=True, host='0.0.0.0', port=5000)

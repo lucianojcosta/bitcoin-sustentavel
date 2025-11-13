@@ -13,10 +13,7 @@ Projeto- Algoritmo e Programação de Computadores
   - `requirements.txt` — dependências do Python
 
 ## Requisitos  
-Antes de executar:  
-- Python versão **3.8** ou superior  
-- Ambiente virtual (opcional)  
-- Terminal / linha de comando  
+- Python versão **3.8** ou superior
 
 ## Instalação e execução
 

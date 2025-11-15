@@ -14,29 +14,28 @@ Projeto- Algoritmo e Programação de Computadores
 
 ## Requisitos  
 - Python versão **3.8** ou superior
+- Flask==2.3.3
 
 ## Instalação e execução
+
+Baixar os arquivos do projeto em uma pasta do computador
 
 Executar windows + r = cmd
 
 1. No terminal, digitar:
    
-   git clone https://github.com/lucianojcosta/Projeto-APC.git
-   cd Projeto-APC
-   
-2. (Opcional) - Criar e ativar ambiente virtual. No terminal, digitar:
-   
-   python3 -m venv env
-   
-   env\Scripts\activate
+   cd "LOCAL DA PASTA"
 
-3. Instalar o Flask. No terminal, digitar:
+   Exemplo:
+   cd "C:\Users\Luciano\Downloads\Projeto-APC"
+
+2. Instalar o Flask. No terminal, digitar:
    
    pip install -r requirements.txt
 
-4. Executar a aplicação. No terminal, digitar:
+3. Executar a aplicação. No terminal, digitar:
    
    python app.py
 
-5. No navegador, acessar a página:  
+4. No navegador, acessar a página:  
    http://127.0.0.1:5000/

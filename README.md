@@ -18,24 +18,24 @@ Projeto- Algoritmo e Programação de Computadores
 
 ## Instalação e execução
 
-Baixar os arquivos do projeto em uma pasta do computador
+1. Baixar os arquivos do projeto em uma pasta do computador
 
-Executar windows + r = cmd
+2. Executar Windows + R = cmd
 
-1. No terminal, digitar:
+3. No terminal, digitar:
    
    cd "LOCAL DA PASTA"
 
    Exemplo:
    cd "C:\Users\Luciano\Downloads\Projeto-APC"
 
-2. Instalar o Flask. No terminal, digitar:
+4. Instalar o Flask. No terminal, digitar:
    
    pip install -r requirements.txt
 
-3. Executar a aplicação. No terminal, digitar:
+5. Executar a aplicação. No terminal, digitar:
    
    python app.py
 
-4. No navegador, acessar a página:  
+6. No navegador, acessar a página:  
    http://127.0.0.1:5000/

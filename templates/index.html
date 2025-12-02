@@ -36,7 +36,7 @@
 
             <div class="form-group">
                 <label for="orcamento">Orçamento Total (R$):</label>
-                <input type="number" id="orcamento" min="0" value="50000">
+                <input type="number" id="orcamento" min="0" value="500000">
             </div>
 
             <div class="form-group">
@@ -66,76 +66,107 @@
                 </div>
             </div>
 
-            <div class="resumo-equipamentos">
-                <h3>📊 Resumo da Estação</h3>
-                <div class="resumo-grid">
-                    <div class="resumo-item">
-                        <span class="resumo-label">Consumo Total:</span>
-                        <span class="resumo-valor" id="consumo-total">0 W</span>
+            <div class="resumo-equipamentos" style="margin-top: 2rem; padding: 1.5rem; background: #2c3e50; color: white; border-radius: 10px;">
+                <h3 style="color: white; text-align: center; margin-bottom: 1rem;">📊 Resumo da Estação</h3>
+                <div class="resumo-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <div class="resumo-item" style="text-align: center; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                        <span class="resumo-label" style="display: block; font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.5rem;">Consumo Total:</span>
+                        <span class="resumo-valor" id="consumo-total" style="display: block; font-size: 1.2rem; font-weight: bold;">0 W</span>
                     </div>
-                    <div class="resumo-item">
-                        <span class="resumo-label">Custo Equipamentos:</span>
-                        <span class="resumo-valor" id="custo-equipamentos">R$ 0</span>
+                    <div class="resumo-item" style="text-align: center; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                        <span class="resumo-label" style="display: block; font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.5rem;">Custo Equipamentos:</span>
+                        <span class="resumo-valor" id="custo-equipamentos" style="display: block; font-size: 1.2rem; font-weight: bold;">R$ 0</span>
                     </div>
-                    <div class="resumo-item">
-                        <span class="resumo-label">Hashrate Total:</span>
-                        <span class="resumo-valor" id="hashrate-total">0 TH/s</span>
+                    <div class="resumo-item" style="text-align: center; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                        <span class="resumo-label" style="display: block; font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.5rem;">Hashrate Total:</span>
+                        <span class="resumo-valor" id="hashrate-total" style="display: block; font-size: 1.2rem; font-weight: bold;">0 TH/s</span>
                     </div>
-                    <div class="resumo-item">
-                        <span class="resumo-label">Consumo Mensal:</span>
-                        <span class="resumo-valor" id="consumo-mensal-kwh">0 kWh</span>
+                    <div class="resumo-item" style="text-align: center; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                        <span class="resumo-label" style="display: block; font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.5rem;">Consumo Mensal:</span>
+                        <span class="resumo-valor" id="consumo-mensal-kwh" style="display: block; font-size: 1.2rem; font-weight: bold;">0 kWh</span>
                     </div>
                 </div>
             </div>
 
-            <button onclick="avancarParaEnergiaSolar()" class="btn-primary">Avançar para Energia Solar →</button>
+            <div class="controle-orcamento" style="margin-top: 2rem; padding: 1.5rem; background: #f8f9fa; border-radius: 10px; border-left: 4px solid #f39c12;">
+                <h3>💰 Controle de Orçamento</h3>
+                <div class="orcamento-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                    <div class="orcamento-item">
+                        <span class="orcamento-label" style="display: block; font-size: 0.9rem; color: #7f8c8d;">Orçamento Total:</span>
+                        <span class="orcamento-valor" id="orcamento-display" style="display: block; font-size: 1.2rem; font-weight: bold; color: #2c3e50;">R$ 500.000</span>
+                    </div>
+                    <div class="orcamento-item">
+                        <span class="orcamento-label" style="display: block; font-size: 0.9rem; color: #7f8c8d;">Gasto com Equipamentos:</span>
+                        <span class="orcamento-valor" id="gasto-equipamentos" style="display: block; font-size: 1.2rem; font-weight: bold; color: #e74c3c;">R$ 0</span>
+                    </div>
+                    <div class="orcamento-item">
+                        <span class="orcamento-label" style="display: block; font-size: 0.9rem; color: #7f8c8d;">Saldo Disponível:</span>
+                        <span class="orcamento-valor" id="saldo-disponivel" style="display: block; font-size: 1.2rem; font-weight: bold; color: #27ae60;">R$ 500.000</span>
+                    </div>
+                    <div class="orcamento-item">
+                        <span class="orcamento-label" style="display: block; font-size: 0.9rem; color: #7f8c8d;">% do Orçamento:</span>
+                        <span class="orcamento-valor" id="percentual-orcamento" style="display: block; font-size: 1.2rem; font-weight: bold; color: #3498db;">0%</span>
+                    </div>
+                </div>
+                <div class="alerta-orcamento" id="alerta-orcamento" style="margin-top: 1rem; padding: 0.5rem; border-radius: 5px; display: none;"></div>
+            </div>
+
+            <button onclick="avancarParaEnergiaSolar()" class="btn-primary" style="margin-top: 2rem; width: 100%;">Avançar para Energia Solar →</button>
         </div>
 
         <!-- Aba 3: Energia Solar -->
         <div id="energia-solar" class="tab-content">
-
-
-            
-<!-- PRECISA COLOCAR O TAMANHO DA PLACA SOLAR  -->
-            
-            
             <h2>☀️ Configuração de Energia Solar</h2>
             
-            <div class="form-group">
-                <label for="quantidade-paineis">Quantidade de Painéis Solares:</label>
-                <input type="number" id="quantidade-paineis" min="0" value="10" onchange="calcularSolar()">
+            <div class="painel-selecao">
+                <h3>🔆 Selecione os Painéis Solares</h3>
+                <div class="lista-paineis" id="lista-paineis">
+                    <!-- Preenchido dinamicamente -->
+                </div>
             </div>
-
-            <div class="form-group">
-                <label for="potencia-painel">Potência por Painel (Wp):</label>
-                <select id="potencia-painel" onchange="calcularSolar()">
-                    <option value="550">550W (Painel Comum)</option>
-                    <option value="450">450W (Painel Econômico)</option>
-                    <option value="600">600W (Painel Premium)</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="custo-sistema">Investimento no Sistema Solar (R$):</label>
-                <input type="number" id="custo-sistema" min="0" value="30000">
-                <small>Custo aproximado: R$ 5.000 por kWp instalado</small>
-            </div>
-
-            <div class="resultado-solar">
-                <h3>⚡ Geração Solar Estimada</h3>
-                <div class="resultado-grid">
-                    <div class="resultado-item">
-                        <span class="resultado-label">Geração Mensal:</span>
-                        <span class="resultado-valor" id="geracao-mensal">0 kWh/mês</span>
+            
+            <div class="resumo-solar" style="margin-top: 2rem; padding: 1.5rem; background: #e8f5e8; border-radius: 10px; border-left: 4px solid #27ae60;">
+                <h3>📊 Resumo do Sistema Solar</h3>
+                <div class="resumo-grid-solar" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                    <div class="resumo-item-solar">
+                        <span style="display: block; font-size: 0.9rem; color: #7f8c8d;">Quantidade Total:</span>
+                        <span class="resumo-valor-solar" id="quantidade-total-paineis" style="display: block; font-size: 1.2rem; font-weight: bold; color: #2c3e50;">0 painéis</span>
                     </div>
-                    <div class="resultado-item">
-                        <span class="resultado-label">Potência do Sistema:</span>
-                        <span class="resultado-valor" id="potencia-sistema">0 kWp</span>
+                    <div class="resumo-item-solar">
+                        <span style="display: block; font-size: 0.9rem; color: #7f8c8d;">Potência Total:</span>
+                        <span class="resumo-valor-solar" id="potencia-total-sistema" style="display: block; font-size: 1.2rem; font-weight: bold; color: #27ae60;">0 kWp</span>
+                    </div>
+                    <div class="resumo-item-solar">
+                        <span style="display: block; font-size: 0.9rem; color: #7f8c8d;">Custo Sistema:</span>
+                        <span class="resumo-valor-solar" id="custo-sistema-solar" style="display: block; font-size: 1.2rem; font-weight: bold; color: #e74c3c;">R$ 0</span>
+                    </div>
+                    <div class="resumo-item-solar">
+                        <span style="display: block; font-size: 0.9rem; color: #7f8c8d;">Geração Estimada:</span>
+                        <span class="resumo-valor-solar" id="geracao-mensal-estimada" style="display: block; font-size: 1.2rem; font-weight: bold; color: #3498db;">0 kWh/mês</span>
                     </div>
                 </div>
             </div>
-
-            <button onclick="calcularViabilidadeCompleta()" class="btn-primary">Calcular Viabilidade Completa</button>
+            
+            <div class="controle-orcamento-solar" style="margin-top: 2rem; padding: 1.5rem; background: #fff3cd; border-radius: 10px; border-left: 4px solid #ffc107;">
+                <h3>💰 Orçamento - Sistema Solar</h3>
+                <div class="orcamento-solar-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                    <div class="orcamento-solar-item">
+                        <span style="display: block; font-size: 0.9rem; color: #7f8c8d;">Orçamento Total:</span>
+                        <span class="orcamento-solar-valor" id="orcamento-total-display" style="display: block; font-size: 1.2rem; font-weight: bold; color: #2c3e50;">R$ 50.000</span>
+                    </div>
+                    <div class="orcamento-solar-item">
+                        <span style="display: block; font-size: 0.9rem; color: #7f8c8d;">Gasto Total:</span>
+                        <span class="orcamento-solar-valor" id="gasto-total-projeto" style="display: block; font-size: 1.2rem; font-weight: bold; color: #e74c3c;">R$ 0</span>
+                    </div>
+                    <div class="orcamento-solar-item">
+                        <span style="display: block; font-size: 0.9rem; color: #7f8c8d;">Saldo Final:</span>
+                        <span class="orcamento-solar-valor" id="saldo-final-projeto" style="display: block; font-size: 1.2rem; font-weight: bold; color: #27ae60;">R$ 50.000</span>
+                    </div>
+                </div>
+                <div class="alerta-orcamento-solar" id="alerta-orcamento-solar" style="margin-top: 1rem; padding: 0.5rem; border-radius: 5px; display: none;"></div>
+            </div>
+            
+            <button onclick="calcularViabilidadeCompleta()" class="btn-primary" style="margin-top: 2rem; width: 100%;">Calcular Viabilidade Completa</button>
         </div>
 
         <!-- Aba 4: Resultados -->

@@ -15,21 +15,42 @@ def dados_iniciais():
     """Retorna todos os dados iniciais para o frontend"""
     return jsonify({
         'estados': calc.ESTADOS_BRASIL,
-        'equipamentos': calc.EQUIPAMENTOS
+        'equipamentos': calc.EQUIPAMENTOS,
+        'paineis_solares': calc.get_paineis_solares()
     })
 
-@app.route('/api/bitcoin-price')
-def get_bitcoin_price():
-    """Retorna preço manual do Bitcoin (sem API externa)"""
-    # Preço fixo manual - pode ser ajustado conforme necessidade
-    preco_manual_brl = 535345.02  # R$ 535.345,02
-    return jsonify({'preco_brl': preco_manual_brl})
+@app.route('/api/calcular-orcamento-equipamentos', methods=['POST'])
+def calcular_orcamento_equipamentos():
+    """Calcula orçamento apenas para equipamentos"""
+    try:
+        data = request.json
+        
+        orcamento_total = float(data.get('orcamento_total', 0))
+        equipamentos = data.get('equipamentos', [])
+        
+        # Para cada equipamento, multiplicar pelo quantidade
+        custo_equipamentos = 0
+        for equip in equipamentos:
+            quantidade = equip.get('quantidade', 1)
+            custo_equipamentos += equip['custo'] * quantidade
+        
+        saldo = orcamento_total - custo_equipamentos
+        
+        return jsonify({
+            'custo_equipamentos': round(custo_equipamentos, 2),
+            'saldo_equipamentos': round(saldo, 2),
+            'ultrapassou_equipamentos': saldo < 0,
+            'percentual_equipamentos': round((custo_equipamentos / orcamento_total * 100) if orcamento_total > 0 else 0, 1)
+        })
+        
+    except Exception as e:
+        return jsonify({'erro': str(e)}), 500
 
 @app.route('/api/calcular-viabilidade-completa', methods=['POST'])
 def calcular_viabilidade_completa():
     """
     Endpoint principal que calcula TODOS os aspectos do projeto
-    Toda a lógica de cálculo está em Python
+    COM CÁLCULOS REVISADOS E CORRIGIDOS
     """
     try:
         data = request.json
@@ -50,10 +71,16 @@ def calcular_viabilidade_completa():
         custo_sistema_solar = data.get('custo_sistema_solar', 0)
         orcamento_total = data.get('orcamento_total', 0)
 
-        # 1. Cálculo dos equipamentos
-        consumo_total_w = sum(eq['consumo'] for eq in equipamentos)
-        custo_equipamentos = sum(eq['custo'] for eq in equipamentos)
-        hashrate_total_th = sum(eq['hashrate'] for eq in equipamentos)
+        # 1. Cálculo dos equipamentos (COM QUANTIDADE)
+        consumo_total_w = 0
+        custo_equipamentos = 0
+        hashrate_total_th = 0
+        
+        for eq in equipamentos:
+            quantidade = eq.get('quantidade', 1)
+            consumo_total_w += eq.get('consumo', 0) * quantidade
+            custo_equipamentos += eq.get('custo', 0) * quantidade
+            hashrate_total_th += eq.get('hashrate', 0) * quantidade
 
         # 2. Cálculos energéticos
         consumo_mensal_kwh = calc.calcular_consumo_mensal(consumo_total_w)
@@ -68,27 +95,35 @@ def calcular_viabilidade_completa():
             geracao_solar_kwh, consumo_mensal_kwh, custo_energia_kwh
         )
 
-        # 3. Cálculo de receita de mineração (usando preço manual)
+        # 3. Cálculo de receita de mineração (FÓRMULA REVISADA)
         preco_bitcoin_brl = 535345.02
         receita_mineracao_mensal = calc.calcular_receita_mineracao(
             hashrate_total_th, preco_bitcoin_brl
         )
 
-        # 4. Cálculos financeiros
+        # 4. Cálculos financeiros (COM CUSTOS ADICIONAIS)
         investimento_total = custo_equipamentos + custo_sistema_solar
+        
+        # Custo de energia não coberta (se houver déficit)
+        deficit_energia = max(consumo_mensal_kwh - geracao_solar_kwh, 0)
+        custo_energia_deficit = deficit_energia * custo_energia_kwh
+        
         payback_meses = calc.calcular_payback(
-            investimento_total, economia_mensal, receita_mineracao_mensal
+            investimento_total, 
+            economia_mensal, 
+            receita_mineracao_mensal
         )
 
         # 5. Cálculos ambientais
         co2_evitado_kg = calc.calcular_co2_evitado(
-            geracao_solar_kwh, dados_estado['fator_emissao']
+            min(geracao_solar_kwh, consumo_mensal_kwh),  # Apenas o que foi usado
+            dados_estado['fator_emissao']
         )
 
         # 6. Análise de viabilidade
         viabilidade = calc.analisar_viabilidade(cobertura_solar, payback_meses)
 
-        # 7. Resultado completo
+        # 7. Resultado completo COM DETALHES
         resultado = {
             # Dados básicos
             'consumo_total_w': consumo_total_w,
@@ -101,12 +136,21 @@ def calcular_viabilidade_completa():
             'cobertura_solar': round(cobertura_solar, 1),
             'potencia_sistema_kw': round((quantidade_paineis * potencia_painel_w) / 1000, 1),
             
-            # Financeiro
+            # Financeiro - DETALHADO
             'economia_mensal': round(economia_mensal, 2),
             'receita_mineracao_mensal': round(receita_mineracao_mensal, 2),
-            'lucro_total_mensal': round(economia_mensal + receita_mineracao_mensal, 2),
+            'custo_energia_deficit': round(custo_energia_deficit, 2),  # NOVO
+            'lucro_liquido_mensal': round(receita_mineracao_mensal + economia_mensal - custo_energia_deficit, 2),
             'payback_meses': round(payback_meses, 1),
             'investimento_total': round(investimento_total, 2),
+            
+            # Detalhes do cálculo
+            'detalhes_calculo': {  # NOVO - para transparência
+                'energia_solar_utilizada': round(min(geracao_solar_kwh, consumo_mensal_kwh), 1),
+                'deficit_energetico': round(deficit_energia, 1),
+                'custo_manutencao_mensal': round(investimento_total * 0.0042, 2),
+                'preco_bitcoin': preco_bitcoin_brl
+            },
             
             # Ambiental
             'co2_evitado_kg': round(co2_evitado_kg, 1),
@@ -123,7 +167,34 @@ def calcular_viabilidade_completa():
 
     except Exception as e:
         print(f"Erro no cálculo de viabilidade: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'erro': f'Erro interno no servidor: {str(e)}'}), 500
+
+
+@app.route('/api/verificar-orcamento', methods=['POST'])
+def verificar_orcamento():
+    """Verifica se o orçamento está sendo ultrapassado"""
+    try:
+        data = request.json
+        
+        orcamento_total = float(data.get('orcamento_total', 0))
+        custo_equipamentos = float(data.get('custo_equipamentos', 0))
+        custo_sistema_solar = float(data.get('custo_sistema_solar', 0))
+        
+        investimento_total = custo_equipamentos + custo_sistema_solar
+        saldo = orcamento_total - investimento_total
+        
+        return jsonify({
+            'orcamento_total': orcamento_total,
+            'investimento_total': round(investimento_total, 2),
+            'saldo': round(saldo, 2),
+            'ultrapassou': saldo < 0,
+            'percentual_utilizado': round((investimento_total / orcamento_total * 100) if orcamento_total > 0 else 0, 1)
+        })
+        
+    except Exception as e:
+        return jsonify({'erro': str(e)}), 500
 
 @app.route('/api/simular-equipamentos', methods=['POST'])
 def simular_equipamentos():
@@ -132,9 +203,17 @@ def simular_equipamentos():
         data = request.json
         equipamentos = data.get('equipamentos', [])
         
-        consumo_total_w = sum(eq['consumo'] for eq in equipamentos)
-        custo_equipamentos = sum(eq['custo'] for eq in equipamentos)
-        hashrate_total_th = sum(eq['hashrate'] for eq in equipamentos)
+        # CORREÇÃO: Multiplica pelo quantidade de cada equipamento
+        consumo_total_w = 0
+        custo_equipamentos = 0
+        hashrate_total_th = 0
+        
+        for eq in equipamentos:
+            quantidade = eq.get('quantidade', 1)
+            consumo_total_w += eq.get('consumo', 0) * quantidade
+            custo_equipamentos += eq.get('custo', 0) * quantidade
+            hashrate_total_th += eq.get('hashrate', 0) * quantidade
+        
         consumo_mensal_kwh = calc.calcular_consumo_mensal(consumo_total_w)
         
         return jsonify({
@@ -144,6 +223,7 @@ def simular_equipamentos():
             'consumo_mensal_kwh': round(consumo_mensal_kwh, 1)
         })
     except Exception as e:
+        print(f"Erro em simular-equipamentos: {e}")
         return jsonify({'erro': str(e)}), 500
 
 @app.route('/api/simular-solar', methods=['POST'])
@@ -169,6 +249,42 @@ def simular_solar():
             'geracao_solar_kwh': round(geracao_solar_kwh, 1),
             'potencia_sistema_kw': round(potencia_sistema_kw, 1)
         })
+    except Exception as e:
+        return jsonify({'erro': str(e)}), 500
+
+@app.route('/api/testar-calculos', methods=['POST'])
+def testar_calculos():
+    """Endpoint para testar cálculos individuais"""
+    try:
+        data = request.json
+        tipo = data.get('tipo')
+        
+        if tipo == 'equipamentos':
+            equipamentos = data.get('equipamentos', [])
+            consumo_total = sum(eq.get('consumo', 0) * eq.get('quantidade', 1) for eq in equipamentos)
+            return jsonify({
+                'consumo_total': consumo_total,
+                'quantidade_equipamentos': len(equipamentos),
+                'detalhes': equipamentos
+            })
+        
+        elif tipo == 'solar':
+            quantidade = data.get('quantidade_paineis', 0)
+            potencia = data.get('potencia_painel', 550)
+            estado = data.get('estado', 'SP')
+            
+            if estado in calc.ESTADOS_BRASIL:
+                irradiacao = calc.ESTADOS_BRASIL[estado]['irradiacao']
+                geracao = calc.calcular_geracao_solar(quantidade, potencia, irradiacao)
+                return jsonify({
+                    'geracao_kwh': geracao,
+                    'irradiacao': irradiacao,
+                    'quantidade_paineis': quantidade,
+                    'potencia_painel': potencia
+                })
+        
+        return jsonify({'erro': 'Tipo de cálculo não especificado'}), 400
+        
     except Exception as e:
         return jsonify({'erro': str(e)}), 500
 

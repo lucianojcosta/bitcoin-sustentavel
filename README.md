@@ -3,42 +3,87 @@
 
 ---
 
-## Tecnologias  
-- Python (com Flask)  
-- HTML / CSS / JavaScript  
-- Arquitetura simples: backend Flask + frontend HTML/CSS/JS  
-- Estrutura do repositório:  
-  - `app.py` — aplicação Flask principal
-  - `calculadora.py` — módulo de cálculos de viabilidade
-  - `templates/` — arquivos de visualização (HTML)
-  - `static/` — arquivos estáticos (CSS, JS, imagens)
-  - `requirements.txt` — dependências do Python
+# Apresentação do Projeto
 
-## Requisitos  
-- Python versão **3.8** ou superior
-- Flask==2.3.3
+O projeto tem como objetivo busca uma alternativa com placas solares para reduzir o impacto ambiental da mineração de Bitcoin, propondo uma solução sustentável e viável com o uso de energia solar.
 
-# Como Executar o Projeto
+A iniciativa avalia se é possível manter uma estação de mineração apenas com energia limpa e em quanto tempo o investimento se pagaria.
 
-1. Baixar os arquivos do projeto em uma pasta do computador
+Questões norteadoras:
+É possível manter uma mineração de Bitcoin apenas com energia solar?
+Em quanto tempo o investimento inicial se pagaria?
+
+O sistema permite ao usuário simular cenários com base no orçamento, local de instalação e custo da energia, calculando a potência necessária, o custo da estrutura solar e a rentabilidade do projeto.
+
+---
+
+# 🛠️ Tecnologias Utilizadas
+- **Backend:** Python 3.8+, Flask 2.3.3
+- **Frontend:** HTML5, CSS3, JavaScript
+- **Arquitetura:** Aplicação web com backend Flask e frontend estático
+
+---
+
+# 📁 Estrutura do Projeto:
+
+```
+bitcoin-sustentavel/
+├── app.py                # Aplicação Flask principal
+├── calculadora.py        # Módulo de cálculos de viabilidade
+├── requirements.txt      # Dependências do Python
+├── templates/            # Templates HTML
+│   └── index.html
+├── static/               # Arquivos estáticos
+│   ├── css/
+│   ├── js/
+│   └── imgs/
+└── README.md             # Este arquivo
+```
+
+---
+
+# 🚀 Como Executar o Projeto
+
+## Pré-requisitos
+- Python 3.8 ou superior instalado
+
+## Passo a Passo
+
+1. Fazer o donwload da pasta do projeto no computador
+   Realizar download conforme print abaixo.
    ![alt text](./static/imgs/readme/executar_projeto_1.png)
-4. Executar Windows + R = cmd
+   Após baixar a pasta, extrair os arquivos no computador
 
-5. No terminal, digitar:
-   
+2. Verificar o caminho que a pasta ficou salva no computador
+   O caminho da pasta pode ser visualizada conforme print abaixo.
+   ![alt text](./static/imgs/readme/executar_projeto_2.png)
+   Copiar o link esse caminho
+
+3. Executar o Terminal do Computador
+   Clique Windows + R
+   E digite "cmd", conforme print abaixo.
+   ![alt text](./static/imgs/readme/executar_projeto_3.png)
+
+4. No terminal, digitar:
+   ```bash
    cd "LOCAL DA PASTA"
-
+   ```
    Exemplo:
-   cd "C:\Users\Luciano\Downloads\Projeto-APC"
+   ```bash
+   cd "C:\Users\Luciano\Downloads\bitcoin-sustentavel-main"
+   ```
 
-6. Instalar o Flask. No terminal, digitar:
+5. Instalar o Flask. No terminal, digitar:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-7. Executar a aplicação. No terminal, digitar:
+6. Executar a aplicação. No terminal, digitar:
    ```bash
    python app.py
    ```
 
-8. No navegador, acessar a página:
+7. No navegador, acessar a página:
    ```
    http://127.0.0.1:5000/
    ```

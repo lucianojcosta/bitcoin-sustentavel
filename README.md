@@ -30,12 +30,22 @@ Projeto- Algoritmo e Programação de Computadores
    cd "C:\Users\Luciano\Downloads\Projeto-APC"
 
 4. Instalar o Flask. No terminal, digitar:
-   
-   pip install -r requirements.txt
 
-5. Executar a aplicação. No terminal, digitar:
+6. Executar a aplicação. No terminal, digitar:
    
    python app.py
 
-6. No navegador, acessar a página:  
+---
+
+# Alunos Participantes
+
+1. **Antenor Bento da Silva Neto** – 252033425
+2. **Eduardo Maia de Oliveira** – 252038664
+3. **Hilber Pereira Barbosa Silva** – 252038717
+4. **Luciano José Rocha Costa** – 252026627
+
+---
+
+
+7. No navegador, acessar a página:  
    http://127.0.0.1:5000/

@@ -1,5 +1,7 @@
-# Estação de Mineração de Bitcoin Sustentável  
-Projeto- Algoritmo e Programação de Computadores
+# Bitcoin Sustentável #
+![alt text](./static/imgs/readme/bitcoin%20sustentavel.png)
+
+---
 
 ## Tecnologias  
 - Python (com Flask)  

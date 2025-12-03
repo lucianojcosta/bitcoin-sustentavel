@@ -18,28 +18,32 @@
 - Python versão **3.8** ou superior
 - Flask==2.3.3
 
-## Instalação e execução
+# Como Executar o Projeto
 
 1. Baixar os arquivos do projeto em uma pasta do computador
+   ```
+   ![alt text](./static/imgs/readme/bitcoin%20sustentavel.png)
+   ```
+4. Executar Windows + R = cmd
 
-2. Executar Windows + R = cmd
-
-3. No terminal, digitar:
+5. No terminal, digitar:
    
    cd "LOCAL DA PASTA"
 
    Exemplo:
    cd "C:\Users\Luciano\Downloads\Projeto-APC"
 
-4. Instalar o Flask. No terminal, digitar:
+6. Instalar o Flask. No terminal, digitar:
 
-6. Executar a aplicação. No terminal, digitar:
-   
+7. Executar a aplicação. No terminal, digitar:
+   ```bash
    python app.py
+   ```
 
-7. No navegador, acessar a página:  
+8. No navegador, acessar a página:
+   ```
    http://127.0.0.1:5000/
-
+   ```
 ---
 
 # Alunos Participantes

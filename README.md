@@ -89,7 +89,7 @@ bitcoin-sustentavel/
    ```
 ---
 
-# Alunos Participantes
+# 👥 Alunos Participantes
 
 1. **Antenor Bento da Silva Neto** – 252033425
 2. **Eduardo Maia de Oliveira** – 252038664

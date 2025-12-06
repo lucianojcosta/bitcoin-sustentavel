@@ -5,202 +5,296 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estação de Mineração Bitcoin Sustentável</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <header>
             <p><img src="/static/imgs/assinatura_auxiliar_conjunto_IE_CIC_2.png" alt="Assinatura CIC/UnB"></p>
-            <h1>⚡ Estação de Mineração Bitcoin Sustentável</h1>
-            <p>Simulador de viabilidade com energia solar para o Brasil</p>
+            <h1><img src="/static/imgs/icon_bitcoin.png" alt="Icon Bitcoin" style="vertical-align: middle; max-width: 65px;"> Estação de Mineração Bitcoin Sustentável</h1>
         </header>
 
         <div class="tabs">
-            <button class="tab-button active" onclick="openTab('config-inicial')">Configuração Inicial</button>
+            <button class="tab-button active" onclick="openTab('pagina-inicial')">Página Inicial</button>
             <button class="tab-button" onclick="openTab('montar-estacao')">Montar Estação</button>
             <button class="tab-button" onclick="openTab('energia-solar')">Energia Solar</button>
             <button class="tab-button" onclick="openTab('resultados')">Resultados</button>
             <button class="tab-button" onclick="openTab('sobre')">Sobre</button>
         </div>
 
-        <!-- Aba 1: Configuração Inicial -->
-        <div id="config-inicial" class="tab-content active">
-            <h2>📍 Configuração Inicial</h2>
+        <!-- Aba 1: Página Inicial -->
+        <div id="pagina-inicial" class="tab-content active">
+            <div class="introducao">
+                <h2>Página Inicial</h2>
+                <div class="explicacao">
+                    <p><strong>Estação de Mineração Bitcoin Sustentável</strong></p>
+                    <p>Este simulador ajuda você a planejar uma estação de mineração alimentada por energia solar. Escolha o estado onde pretende instalar, informe o orçamento disponível e avance para montar sua estação com máquinas (ASICs/GPU) e escolher os painéis solares. O simulador estima consumo elétrico, área ocupada pelos painéis, custo do sistema e tempo estimado de retorno.</p>
+                    <p class="dica"><i class="fas fa-lightbulb"></i> <strong>Dica:</strong> A escolha do estado influencia irradiação solar e o custo da energia — ambos impactam diretamente na viabilidade econômica.</p>
+                    <p><strong>Irradiação Solar</strong> é a quantidade de energia do Sol que chega a uma área específica da superfície da Terra em determinado período de tempo.</p>
+                    <p><strong>Custo de energia</strong> é o preço médio que os consumidores pagam por cada kWh (quilowatt-hora) de energia elétrica.</p>
+                </div>
+            </div>
             
             <div class="form-group">
                 <label for="estado">Estado:</label>
-                <select id="estado">
+                <select id="estado" class="form-control">
                     <option value="">Selecione seu estado</option>
                 </select>
-                <small>Irradiação solar média: <span id="irradiacao-info">--</span> kWh/m²/dia</small>
+                
+                <div class="card-info-estado" id="card-estado" style="display: none; margin-top: 1rem; padding: 1rem; background: #e8f5e8; border-radius: 8px; border-left: 4px solid #27ae60;">
+                    <h4 style="margin-bottom: 0.5rem; color: #2c3e50;">Informações do Estado Selecionado</h4>
+                    <div class="info-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem;">
+                        <div class="info-item">
+                            <span style="font-size: 0.9rem; color: #7f8c8d;">Irradiação média:</span>
+                            <span style="font-weight: bold; color: #27ae60;" id="info-irradiacao">-- kWh/m²/dia</span>
+                        </div>
+                        <div class="info-item">
+                            <span style="font-size: 0.9rem; color: #7f8c8d;">Custo da energia:</span>
+                            <span style="font-weight: bold; color: #e74c3c;" id="info-tarifa">R$ --/kWh</span>
+                        </div>
+                    </div>
+                    <div class="fonte-info" style="margin-top: 0.5rem; font-size: 0.8rem; color: #95a5a6;">
+                        <i class="fas fa-info-circle"></i> Fonte: Atlas Solar Brasileiro (INPE) / ANEEL (2024)
+                    </div>
+                </div>
             </div>
 
             <div class="form-group">
                 <label for="orcamento">Orçamento Total (R$):</label>
-                <input type="number" id="orcamento" min="0" value="500000">
+                <input type="number" id="orcamento" min="0" value="500000" step="1000">
             </div>
 
-            <div class="form-group">
-                <label for="custo-energia">Custo da Energia (R$/kWh):</label>
-                <input type="number" id="custo-energia" step="0.01" min="0" value="0.80">
-                <small>Verifique na sua conta de luz (média Brasil: R$ 0,80/kWh)</small>
-            </div>
-
-            <button onclick="avancarParaMontagem()" class="btn-primary">Avançar para Montagem →</button>
+            <button onclick="iniciarSimulacao()" class="btn-primary iniciar-btn">
+                <i class="fas fa-play-circle"></i> Iniciar Simulação
+            </button>
         </div>
 
         <!-- Aba 2: Montar Estação -->
         <div id="montar-estacao" class="tab-content">
-            <h2>🛠️ Montar Estação de Mineração</h2>
+            <h2>Configuração da Estação de Mineração</h2>
+
+            <div class="explicacao-equipamentos">
+                <div class="explicacao-item">
+                    <h4><i class="fas fa-microchip"></i> O que é ASIC?</h4>
+                    <p>ASIC (Application-Specific Integrated Circuit) é um chip desenvolvido especificamente para minerar criptomoedas como Bitcoin. Oferece alta eficiência energética (mais hashrate por watt) e é especializado em mineração.</p>
+                </div>
+                <div class="explicacao-item">
+                    <h4><i class="fas fa-video-card"></i> O que é GPU?</h4>
+                    <p>GPU (Graphics Processing Unit) é versátil para mineração de várias criptomoedas e tarefas de computação, mas normalmente menos eficiente em Bitcoin atualmente.</p>
+                </div>
+                <div class="explicacao-item">
+                    <h4><i class="fas fa-bolt"></i> O que é Hashrate?</h4>
+                    <p>Hashrate é a taxa de processamento da máquina, medida em TH/s (Terahashes por segundo). Maior hashrate aumenta sua chance de validar blocos e receber recompensas.</p>
+                </div>
+                <div class="explicacao-item">
+                    <h4><i class="fas fa-tachometer-alt"></i> Consumo e Energia</h4>
+                    <p><strong>W (Watts)</strong> = potência instantânea (consumo enquanto ligado)<br>
+                       <strong>kWh (kiloWatt-hora)</strong> = energia consumida ao longo do tempo<br>
+                       <em>Fórmula:</em> kWh/mês = (W_total ÷ 1000) × 24h × 30 dias</p>
+                </div>
+            </div>
             
-            <div class="equipamento-categoria">
-                <h3>🔧 ASICs (Recomendado para Bitcoin)</h3>
-                <div id="lista-asics">
-                    <!-- Preenchido dinamicamente -->
-                </div>
+            <div class="equipamento-selecao">
+                <h3><i class="fas fa-th-large"></i> Selecione os Equipamentos da Estação de Mineração</h3>
+                <p>Adicione equipamentos clicando nos botões +. Cada equipamento mostrará sua hashrate e seu gasto energético.</p>
             </div>
 
             <div class="equipamento-categoria">
-                <h3>🎮 GPUs (Para outras criptomoedas)</h3>
-                <div id="lista-gpus">
-                    <!-- Preenchido dinamicamente -->
+                <h3><i class="fas fa-microchip"></i> ASICs</h3>
+                <div id="lista-asics"></div>
+            </div>
+
+            <div class="equipamento-categoria">
+                <h3><i class="fas fa-video-card"></i> GPUs</h3>
+                <div id="lista-gpus"></div>
+            </div>
+
+            <div class="resumo-equipamentos">
+                <h3><i class="fas fa-chart-bar"></i> Resumo da Estação</h3>
+                <div class="resumo-grid">
+                    <div class="resumo-item">
+                        <span class="resumo-label">Consumo Total:</span>
+                        <span class="resumo-valor" id="consumo-total">0 W</span>
+                        <small id="consumo-mensal-equip">≈ 0 kWh/mês</small>
+                    </div>
+                    <div class="resumo-item">
+                        <span class="resumo-label">Custo Equipamentos:</span>
+                        <span class="resumo-valor" id="custo-equipamentos">R$ 0</span>
+                    </div>
+                    <div class="resumo-item">
+                        <span class="resumo-label">Hashrate Total:</span>
+                        <span class="resumo-valor" id="hashrate-total">0 TH/s</span>
+                        <small id="btc-estimado">≈ 0 BTC/mês</small>
+                    </div>
+                    <div class="resumo-item">
+                        <span class="resumo-label">Consumo Diário:</span>
+                        <span class="resumo-valor" id="consumo-diario-kwh">0 kWh</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="resumo-equipamentos" style="margin-top: 2rem; padding: 1.5rem; background: #2c3e50; color: white; border-radius: 10px;">
-                <h3 style="color: white; text-align: center; margin-bottom: 1rem;">📊 Resumo da Estação</h3>
-                <div class="resumo-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                    <div class="resumo-item" style="text-align: center; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
-                        <span class="resumo-label" style="display: block; font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.5rem;">Consumo Total:</span>
-                        <span class="resumo-valor" id="consumo-total" style="display: block; font-size: 1.2rem; font-weight: bold;">0 W</span>
+            <div class="controle-orcamento">
+                <h3><i class="fas fa-wallet"></i> Controle de Orçamento</h3>
+                <div class="orcamento-grid">
+                    <div class="orcamento-item">
+                        <span class="orcamento-label">Orçamento Total:</span>
+                        <span class="orcamento-valor" id="orcamento-display">R$ 500.000</span>
                     </div>
-                    <div class="resumo-item" style="text-align: center; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
-                        <span class="resumo-label" style="display: block; font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.5rem;">Custo Equipamentos:</span>
-                        <span class="resumo-valor" id="custo-equipamentos" style="display: block; font-size: 1.2rem; font-weight: bold;">R$ 0</span>
+                    <div class="orcamento-item">
+                        <span class="orcamento-label">Gasto com Equipamentos:</span>
+                        <span class="orcamento-valor" id="gasto-equipamentos">R$ 0</span>
                     </div>
-                    <div class="resumo-item" style="text-align: center; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
-                        <span class="resumo-label" style="display: block; font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.5rem;">Hashrate Total:</span>
-                        <span class="resumo-valor" id="hashrate-total" style="display: block; font-size: 1.2rem; font-weight: bold;">0 TH/s</span>
+                    <div class="orcamento-item">
+                        <span class="orcamento-label">Saldo Disponível:</span>
+                        <span class="orcamento-valor" id="saldo-disponivel">R$ 500.000</span>
                     </div>
-                    <div class="resumo-item" style="text-align: center; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
-                        <span class="resumo-label" style="display: block; font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.5rem;">Consumo Mensal:</span>
-                        <span class="resumo-valor" id="consumo-mensal-kwh" style="display: block; font-size: 1.2rem; font-weight: bold;">0 kWh</span>
+                    <div class="orcamento-item">
+                        <span class="orcamento-label">% do Orçamento:</span>
+                        <span class="orcamento-valor" id="percentual-orcamento">0%</span>
                     </div>
                 </div>
+                <div class="alerta-orcamento" id="alerta-orcamento"></div>
             </div>
 
-            <div class="controle-orcamento" style="margin-top: 2rem; padding: 1.5rem; background: #f8f9fa; border-radius: 10px; border-left: 4px solid #f39c12;">
-                <h3>💰 Controle de Orçamento</h3>
-                <div class="orcamento-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
-                    <div class="orcamento-item">
-                        <span class="orcamento-label" style="display: block; font-size: 0.9rem; color: #7f8c8d;">Orçamento Total:</span>
-                        <span class="orcamento-valor" id="orcamento-display" style="display: block; font-size: 1.2rem; font-weight: bold; color: #2c3e50;">R$ 500.000</span>
-                    </div>
-                    <div class="orcamento-item">
-                        <span class="orcamento-label" style="display: block; font-size: 0.9rem; color: #7f8c8d;">Gasto com Equipamentos:</span>
-                        <span class="orcamento-valor" id="gasto-equipamentos" style="display: block; font-size: 1.2rem; font-weight: bold; color: #e74c3c;">R$ 0</span>
-                    </div>
-                    <div class="orcamento-item">
-                        <span class="orcamento-label" style="display: block; font-size: 0.9rem; color: #7f8c8d;">Saldo Disponível:</span>
-                        <span class="orcamento-valor" id="saldo-disponivel" style="display: block; font-size: 1.2rem; font-weight: bold; color: #27ae60;">R$ 500.000</span>
-                    </div>
-                    <div class="orcamento-item">
-                        <span class="orcamento-label" style="display: block; font-size: 0.9rem; color: #7f8c8d;">% do Orçamento:</span>
-                        <span class="orcamento-valor" id="percentual-orcamento" style="display: block; font-size: 1.2rem; font-weight: bold; color: #3498db;">0%</span>
-                    </div>
-                </div>
-                <div class="alerta-orcamento" id="alerta-orcamento" style="margin-top: 1rem; padding: 0.5rem; border-radius: 5px; display: none;"></div>
-            </div>
-
-            <button onclick="avancarParaEnergiaSolar()" class="btn-primary" style="margin-top: 2rem; width: 100%;">Avançar para Energia Solar →</button>
+            <button onclick="avancarParaEnergiaSolar()" class="btn-primary">
+                <i class="fas fa-sun"></i> Avançar para Energia Solar →
+            </button>
         </div>
 
         <!-- Aba 3: Energia Solar -->
         <div id="energia-solar" class="tab-content">
-            <h2>☀️ Configuração de Energia Solar</h2>
+            <h2>Configuração de Energia Solar</h2>
+            
+            <div class="explicacao-solar">
+                <div class="explicacao-item">
+                    <h4><i class="fas fa-solar-panel"></i> Tipos de Células Solares</h4>
+                    <div class="tabela-tipos">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tipo de células</th>
+                                    <th>Eficiência</th>
+                                    <th>Custo</th>
+                                    <th>Espaço necessário</th>
+                                    <th>Vida útil</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Monocristalina</td>
+                                    <td>Alta</td>
+                                    <td>Alto</td>
+                                    <td>Menor</td>
+                                    <td>25–30 anos</td>
+                                </tr>
+                                <tr>
+                                    <td>Policristalina</td>
+                                    <td>Média</td>
+                                    <td>Médio</td>
+                                    <td>Maior</td>
+                                    <td>20–25 anos</td>
+                                </tr>
+                                <tr>
+                                    <td>Filme fino</td>
+                                    <td>Baixa</td>
+                                    <td>Baixo</td>
+                                    <td>Muito maior</td>
+                                    <td>10–20 anos</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
             
             <div class="painel-selecao">
-                <h3>🔆 Selecione os Painéis Solares</h3>
-                <div class="lista-paineis" id="lista-paineis">
-                    <!-- Preenchido dinamicamente -->
+                <h3><i class="fas fa-th-large"></i> Selecione os Painéis Solares</h3>
+                <p>Adicione painéis clicando nos botões +. Cada painel mostrará sua geração estimada mensal baseada na irradiação do estado selecionado.</p>
+                <div class="lista-paineis" id="lista-paineis"></div>
+            </div>
+            
+            <div class="resumo-solar">
+                <h3><i class="fas fa-chart-line"></i> Resumo do Sistema Solar</h3>
+                <div class="resumo-grid-solar">
+                    <div class="resumo-item-solar">
+                        <span class="resumo-label-solar">Quantidade Total:</span>
+                        <span class="resumo-valor-solar" id="quantidade-total-paineis">0 painéis</span>
+                    </div>
+                    <div class="resumo-item-solar">
+                        <span class="resumo-label-solar">Potência Total:</span>
+                        <span class="resumo-valor-solar" id="potencia-total-sistema">0 kWp</span>
+                    </div>
+                    <div class="resumo-item-solar">
+                        <span class="resumo-label-solar">Custo Sistema:</span>
+                        <span class="resumo-valor-solar" id="custo-sistema-solar">R$ 0</span>
+                    </div>
+                    <div class="resumo-item-solar">
+                        <span class="resumo-label-solar">Geração Estimada:</span>
+                        <span class="resumo-valor-solar" id="geracao-mensal-estimada">0 kWh/mês</span>
+                    </div>
+                    <div class="resumo-item-solar">
+                        <span class="resumo-label-solar">Área Ocupada:</span>
+                        <span class="resumo-valor-solar" id="area-total-sistema">0 m²</span>
+                    </div>
                 </div>
             </div>
             
-            <div class="resumo-solar" style="margin-top: 2rem; padding: 1.5rem; background: #e8f5e8; border-radius: 10px; border-left: 4px solid #27ae60;">
-                <h3>📊 Resumo do Sistema Solar</h3>
-                <div class="resumo-grid-solar" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
-                    <div class="resumo-item-solar">
-                        <span style="display: block; font-size: 0.9rem; color: #7f8c8d;">Quantidade Total:</span>
-                        <span class="resumo-valor-solar" id="quantidade-total-paineis" style="display: block; font-size: 1.2rem; font-weight: bold; color: #2c3e50;">0 painéis</span>
+            <div class="controle-orcamento-solar">
+                <h3><i class="fas fa-calculator"></i> Orçamento - Sistema Completo</h3>
+                <div class="orcamento-solar-grid">
+                    <div class="orcamento-solar-item">
+                        <span class="orcamento-label-solar">Orçamento Total:</span>
+                        <span class="orcamento-solar-valor" id="orcamento-total-display">R$ 500.000</span>
                     </div>
-                    <div class="resumo-item-solar">
-                        <span style="display: block; font-size: 0.9rem; color: #7f8c8d;">Potência Total:</span>
-                        <span class="resumo-valor-solar" id="potencia-total-sistema" style="display: block; font-size: 1.2rem; font-weight: bold; color: #27ae60;">0 kWp</span>
+                    <div class="orcamento-solar-item">
+                        <span class="orcamento-label-solar">Gasto Total:</span>
+                        <span class="orcamento-solar-valor" id="gasto-total-projeto">R$ 0</span>
                     </div>
-                    <div class="resumo-item-solar">
-                        <span style="display: block; font-size: 0.9rem; color: #7f8c8d;">Custo Sistema:</span>
-                        <span class="resumo-valor-solar" id="custo-sistema-solar" style="display: block; font-size: 1.2rem; font-weight: bold; color: #e74c3c;">R$ 0</span>
-                    </div>
-                    <div class="resumo-item-solar">
-                        <span style="display: block; font-size: 0.9rem; color: #7f8c8d;">Geração Estimada:</span>
-                        <span class="resumo-valor-solar" id="geracao-mensal-estimada" style="display: block; font-size: 1.2rem; font-weight: bold; color: #3498db;">0 kWh/mês</span>
+                    <div class="orcamento-solar-item">
+                        <span class="orcamento-label-solar">Saldo Final:</span>
+                        <span class="orcamento-solar-valor" id="saldo-final-projeto">R$ 500.000</span>
                     </div>
                 </div>
+                <div class="alerta-orcamento-solar" id="alerta-orcamento-solar"></div>
             </div>
             
-            <div class="controle-orcamento-solar" style="margin-top: 2rem; padding: 1.5rem; background: #fff3cd; border-radius: 10px; border-left: 4px solid #ffc107;">
-                <h3>💰 Orçamento - Sistema Solar</h3>
-                <div class="orcamento-solar-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
-                    <div class="orcamento-solar-item">
-                        <span style="display: block; font-size: 0.9rem; color: #7f8c8d;">Orçamento Total:</span>
-                        <span class="orcamento-solar-valor" id="orcamento-total-display" style="display: block; font-size: 1.2rem; font-weight: bold; color: #2c3e50;">R$ 50.000</span>
-                    </div>
-                    <div class="orcamento-solar-item">
-                        <span style="display: block; font-size: 0.9rem; color: #7f8c8d;">Gasto Total:</span>
-                        <span class="orcamento-solar-valor" id="gasto-total-projeto" style="display: block; font-size: 1.2rem; font-weight: bold; color: #e74c3c;">R$ 0</span>
-                    </div>
-                    <div class="orcamento-solar-item">
-                        <span style="display: block; font-size: 0.9rem; color: #7f8c8d;">Saldo Final:</span>
-                        <span class="orcamento-solar-valor" id="saldo-final-projeto" style="display: block; font-size: 1.2rem; font-weight: bold; color: #27ae60;">R$ 50.000</span>
-                    </div>
-                </div>
-                <div class="alerta-orcamento-solar" id="alerta-orcamento-solar" style="margin-top: 1rem; padding: 0.5rem; border-radius: 5px; display: none;"></div>
-            </div>
-            
-            <button onclick="calcularViabilidadeCompleta()" class="btn-primary" style="margin-top: 2rem; width: 100%;">Calcular Viabilidade Completa</button>
+            <button onclick="calcularViabilidadeCompleta()" class="btn-primary">
+                <i class="fas fa-calculator"></i> Calcular Viabilidade Completa
+            </button>
         </div>
 
         <!-- Aba 4: Resultados -->
         <div id="resultados" class="tab-content">
-            <h2>📈 Resultados e Viabilidade</h2>
+            <h2>Resultados e Viabilidade</h2>
             
             <div class="indicadores">
                 <div class="indicador" id="indicador-cobertura">
-                    <h3>☀️ Cobertura Solar</h3>
+                    <h3><i class="fas fa-sun"></i> Cobertura Solar</h3>
                     <div class="valor" id="cobertura-solar">--%</div>
                     <small>Porcentagem do consumo suprida pela energia solar</small>
                 </div>
                 
                 <div class="indicador" id="indicador-economia">
-                    <h3>💰 Economia Mensal</h3>
+                    <h3><i class="fas fa-money-bill-wave"></i> Economia Mensal</h3>
                     <div class="valor" id="economia-mensal">R$ --</div>
                     <small>Economia com conta de energia</small>
                 </div>
                 
                 <div class="indicador" id="indicador-payback">
-                    <h3>⏱️ Payback</h3>
+                    <h3><i class="fas fa-calendar-alt"></i> Payback</h3>
                     <div class="valor" id="payback">-- meses</div>
                     <small>Tempo de retorno do investimento</small>
                 </div>
                 
                 <div class="indicador" id="indicador-co2">
-                    <h3>🌱 CO₂ Evitado</h3>
+                    <h3><i class="fas fa-leaf"></i> CO₂ Evitado</h3>
                     <div class="valor" id="co2-evitado">-- kg/mês</div>
                     <small>Emissões de carbono evitadas</small>
                 </div>
             </div>
 
             <div class="grafico-comparativo">
-                <h3>📊 Consumo vs Geração de Energia</h3>
+                <h3><i class="fas fa-chart-bar"></i> Consumo vs Geração de Energia</h3>
                 <div class="barras">
                     <div class="barra-container">
                         <div class="barra-label">Consumo da Estação</div>
@@ -219,13 +313,8 @@
                 </div>
             </div>
 
-            <div class="recomendacao" id="recomendacao">
-                <h3>💡 Análise de Viabilidade</h3>
-                <p>Preencha todas as abas anteriores para ver a análise completa do projeto.</p>
-            </div>
-
             <div class="detalhes-financeiros" id="detalhes-financeiros" style="display: none;">
-                <h3>📋 Detalhes Financeiros</h3>
+                <h3><i class="fas fa-file-invoice-dollar"></i> Detalhes Financeiros</h3>
                 <div class="detalhes-grid">
                     <div class="detalhe-item">
                         <span>Receita Mineração:</span>
@@ -239,17 +328,45 @@
                         <span>Preço Bitcoin:</span>
                         <span id="detalhe-bitcoin">R$ 0</span>
                     </div>
+                    <div class="detalhe-item">
+                        <span>Custo Energia (R$/kWh):</span>
+                        <span id="detalhe-tarifa">R$ 0,000</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span>Custo Sistema Solar:</span>
+                        <span id="detalhe-custo-solar">R$ 0</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span>Custo Energia (sem solar):</span>
+                        <span id="detalhe-custo-energia-total">R$ 0/mês</span>
+                    </div>
                 </div>
+                
+                <div class="explicacao-calculo" id="explicacao-calculo" style="margin-top: 1.5rem; padding: 1rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #3498db;">
+                    <h4 style="color: #2c3e50; margin-bottom: 0.5rem;"><i class="fas fa-calculator"></i> Explicação dos Cálculos</h4>
+                    <div id="explicacao-conteudo">
+                        <p style="font-size: 0.9rem; color: #5a6268;">Os cálculos serão exibidos aqui após a simulação...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nova-simulacao" style="margin-top: 2rem; text-align: center;">
+                <button onclick="novaSimulacao()" class="btn-primary" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">
+                    <i class="fas fa-redo"></i> Nova Simulação
+                </button>
+                <p style="margin-top: 1rem; color: #7f8c8d; font-size: 0.9rem;">
+                    Clique no botão acima para começar uma nova simulação com todos os dados zerados.
+                </p>
             </div>
         </div>
 
         <!-- Aba 5: Sobre -->
         <div id="sobre" class="tab-content">
-            <h2>ℹ️ Sobre o Projeto</h2>
+            <h2>Sobre o Projeto</h2>
             
             <div class="sobre-content">
                 <div class="integrantes">
-                    <h3>👥 Integrantes do Grupo</h3>
+                    <h3><i class="fas fa-users"></i> Integrantes do Grupo</h3>
                     <ul>
                         <li>Antenor Bento da Silva Neto (252033425)</li>
                         <li>Eduardo Maia de Oliveira (252038664)</li>
@@ -260,18 +377,18 @@
                 </div>
 
                 <div class="fontes">
-                    <h3>📚 Fontes de Dados Utilizadas</h3>
+                    <h3><i class="fas fa-book"></i> Fontes de Dados Utilizadas</h3>
                     <ul>
                         <li><strong>Irradiação Solar:</strong> Atlas Solar Brasileiro (INPE)</li>
                         <li><strong>Equipamentos:</strong> Dados técnicos de fabricantes (Bitmain, MicroBT, Canaan, NVIDIA, AMD)</li>
-                        <li><strong>Cotação Bitcoin:</strong> API CoinGecko</li>
+                        <li><strong>Equipamentos:</strong> <a href="https://asicmarketplace.com/">ASIC Marketplace</a></li>
                         <li><strong>Emissões CO₂:</strong> Ministério do Meio Ambiente</li>
-                        <li><strong>Tarifas de Energia:</strong> ANEEL</li>
+                        <li><strong>Tarifas de Energia:</strong> <a href="https://portalrelatorios.aneel.gov.br/luznatarifa/rankingtarifas" target="_blank">Agência Nacional de Energia Elétrica - ANEEL</a></li>
                     </ul>
                 </div>
 
                 <div class="tecnologias">
-                    <h3>🔧 Tecnologias Utilizadas</h3>
+                    <h3><i class="fas fa-code"></i> Tecnologias Utilizadas</h3>
                     <div class="tech-grid">
                         <span class="tech-item">Python</span>
                         <span class="tech-item">Flask</span>
@@ -286,10 +403,4 @@
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
-
 </html>
-
-
-
-
-

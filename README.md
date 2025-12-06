@@ -3,7 +3,7 @@
 
 ---
 
-# 📋 Apresentação do Projeto
+# Apresentação do Projeto
 
 O projeto tem como objetivo busca uma alternativa com placas solares para reduzir o impacto ambiental da mineração de Bitcoin, propondo uma solução sustentável e viável com o uso de energia solar.
 
@@ -17,14 +17,14 @@ O sistema permite ao usuário simular cenários com base no orçamento, local de
 
 ---
 
-# 🛠️ Tecnologias Utilizadas
+# Tecnologias Utilizadas
 - **Backend:** Python 3.8+, Flask 2.3.3
 - **Frontend:** HTML5, CSS3, JavaScript
 - **Arquitetura:** Aplicação web com backend Flask e frontend estático
 
 ---
 
-# 📁 Estrutura do Projeto:
+# Estrutura do Projeto:
 
 ```
 bitcoin-sustentavel/
@@ -42,7 +42,7 @@ bitcoin-sustentavel/
 
 ---
 
-# 🚀 Como Executar o Projeto
+# Como Executar o Projeto
 
 ## Pré-requisitos
 - Python 3.8 ou superior instalado
@@ -89,7 +89,7 @@ bitcoin-sustentavel/
    ```
 ---
 
-# 👥 Alunos Participantes
+# Alunos Participantes
 
 1. **Antenor Bento da Silva Neto** – 252033425
 2. **Eduardo Maia de Oliveira** – 252038664

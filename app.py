@@ -100,7 +100,7 @@ def calcular_viabilidade_completa():
         )
 
         # 3. Cálculo de receita de mineração
-        preco_bitcoin_brl = 507647.84
+        preco_bitcoin_brl = 507647.84 # Valor em 09/12/2025
         receita_mineracao_mensal = calc.calcular_receita_mineracao(
             hashrate_total_th, preco_bitcoin_brl
         )
@@ -285,4 +285,5 @@ def simular_solar():
         return jsonify({'erro': str(e)}), 500
 
 if __name__ == '__main__':
+
     app.run(debug=True, host='0.0.0.0', port=5000)

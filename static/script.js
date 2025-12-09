@@ -837,7 +837,7 @@ function exibirResultadosCompletos(data) {
     const explicacao = document.getElementById('explicacao-conteudo');
     if (data.detalhes_calculo) {
         const btcMensal = data.btc_mensal || 0;
-        const precoBTC = data.preco_bitcoin_brl || 535345.02;
+        const precoBTC = data.preco_bitcoin_brl || 507647.02;
         
         explicacao.innerHTML = `
             <p style="font-size: 0.9rem; color: #5a6268; margin-bottom: 0.5rem;">

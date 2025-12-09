@@ -100,7 +100,7 @@ def calcular_viabilidade_completa():
         )
 
         # 3. Cálculo de receita de mineração
-        preco_bitcoin_brl = 535345.02
+        preco_bitcoin_brl = 507647.84
         receita_mineracao_mensal = calc.calcular_receita_mineracao(
             hashrate_total_th, preco_bitcoin_brl
         )

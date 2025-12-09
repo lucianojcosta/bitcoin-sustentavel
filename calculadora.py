@@ -288,8 +288,8 @@ class CalculadoraBitcoin:
                 }
     }
 
-    # Equipame
-    # ntos de mineração
+    # Equipamentos de mineração
+
     EQUIPAMENTOS = {
         "GPU": [
             {
@@ -393,7 +393,7 @@ class CalculadoraBitcoin:
         ]
     }
 
-    # Painéis Solares com dimensões adicionais
+    # Painéis Solares com dimensões e eficiências
     PAINÉIS_SOLARES = [
         {
             "modelo": "Resun RSM-010P",
@@ -668,15 +668,16 @@ class CalculadoraBitcoin:
         return energia_solar_utilizada * custo_energia_kwh
 
     @staticmethod
-    def calcular_payback(investimento_total, economia_mensal, receita_mineracao_mensal=0):
+    def calcular_payback(investimento_total, economia_mensal, custo_energia_deficit=0, receita_mineracao_mensal=0):
         """
         Calcula tempo de retorno do investimento em meses
+        Fórmula: Payback = Investimento / (Receita Mineração + Economia Energia - Custo Energia Déficit - Custo Manutenção)
         """
-        custo_manutencao_mensal = investimento_total * 0.0042
-        lucro_liquido_mensal = receita_mineracao_mensal + economia_mensal - custo_manutencao_mensal
+        custo_manutencao_mensal = investimento_total * 0.0042 # 0.42% mensal de manutenção
+        lucro_liquido_mensal = receita_mineracao_mensal + economia_mensal - custo_energia_deficit - custo_manutencao_mensal
         
         if lucro_liquido_mensal <= 0:
-            return 999
+            return 999 # Retorno muito longo/inviável
         
         return investimento_total / lucro_liquido_mensal
 
@@ -726,7 +727,6 @@ class CalculadoraBitcoin:
         Calcula área total ocupada pelos painéis em m²
         Estimativa baseada em painéis padrão
         """
-        # Área média por kWp: 6-7 m²/kWp para painéis modernos
         potencia_total_kw = (quantidade_paineis * potencia_painel_w) / 1000
         return potencia_total_kw * 6.5  # m²/kWp
 

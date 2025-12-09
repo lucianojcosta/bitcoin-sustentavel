@@ -115,9 +115,17 @@ def calcular_viabilidade_completa():
         deficit_energia = max(consumo_mensal_kwh - geracao_solar_kwh, 0)
         custo_energia_deficit = deficit_energia * custo_energia_kwh
         
+        # Custo de energia total SEM sistema solar (para comparação)
+        custo_energia_total_sem_solar = consumo_mensal_kwh * custo_energia_kwh
+
+        # Custo de manutenção mensal
+        custo_manutencao_mensal = investimento_total * 0.0042
+
+        # Payback
         payback_meses = calc.calcular_payback(
             investimento_total, 
             economia_mensal, 
+            custo_energia_deficit,
             receita_mineracao_mensal
         )
 
@@ -151,7 +159,9 @@ def calcular_viabilidade_completa():
             'economia_mensal': round(economia_mensal, 2),
             'receita_mineracao_mensal': round(receita_mineracao_mensal, 2),
             'custo_energia_deficit': round(custo_energia_deficit, 2),
-            'lucro_liquido_mensal': round(receita_mineracao_mensal + economia_mensal - custo_energia_deficit, 2),
+            'custo_energia_total_sem_solar': round(custo_energia_total_sem_solar, 2),
+            'custo_manutencao_mensal': round(custo_manutencao_mensal, 2),
+            'lucro_liquido_mensal': round(receita_mineracao_mensal + economia_mensal - custo_energia_deficit - custo_manutencao_mensal, 2),
             'payback_meses': round(payback_meses, 1),
             'investimento_total': round(investimento_total, 2),
             'custo_energia_kwh': round(custo_energia_kwh, 3),
@@ -164,7 +174,7 @@ def calcular_viabilidade_completa():
                 'blocos_por_dia': 144,
                 'preco_bitcoin': preco_bitcoin_brl,
                 'deficit_energetico': round(deficit_energia, 1),
-                'custo_manutencao_mensal': round(investimento_total * 0.0042, 2)
+                'custo_manutencao_mensal': round(custo_manutencao_mensal, 2)
             },
             
             # Ambiental
